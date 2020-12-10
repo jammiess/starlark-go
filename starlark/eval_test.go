@@ -117,6 +117,7 @@ func TestExecFile(t *testing.T) {
 		"testdata/assign.star",
 		"testdata/bool.star",
 		"testdata/builtins.star",
+		"testdata/bytes.star",
 		"testdata/control.star",
 		"testdata/dict.star",
 		"testdata/float.star",

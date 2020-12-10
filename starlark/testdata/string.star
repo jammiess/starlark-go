@@ -6,6 +6,14 @@ load("assert.star", "assert")
 # raw string literals:
 assert.eq(r"a\bc", "a\\bc")
 
+# Hex and octal escapes may encode any byte value
+# even in a "text" (not 'bytes') string.
+# This is not required by the spec, but is necessary
+# in the Go implementation so that repr(x) works for
+# invalid Unicode, such as half an emoji.
+assert.eq(list("\x80\377".elems()), ["\x80", "\xff"])
+assert.eq(list("\x80\377".codepoints()), ["�", "�"])
+
 # truth
 assert.true("abc")
 assert.true(chr(0))
@@ -46,28 +54,34 @@ assert.fails(lambda: ord(""), "string encodes 0 Unicode code points, want 1")
 assert.fails(lambda: ord("😿"[1:]), "string encodes 3 Unicode code points, want 1")  # 3 x 0xFFFD
 
 # string.codepoint_ords
-assert.eq(type("abcЙ😿".codepoint_ords()), "codepoints")
+assert.eq(type("abcЙ😿".codepoint_ords()), "string.codepoints")
 assert.eq(str("abcЙ😿".codepoint_ords()), '"abcЙ😿".codepoint_ords()')
 assert.eq(list("abcЙ😿".codepoint_ords()), [97, 98, 99, 1049, 128575])
 assert.eq(list(("A" + "😿Z"[1:]).codepoint_ords()), [ord("A"), 0xFFFD, 0xFFFD, 0xFFFD, ord("Z")])
 assert.eq(list("".codepoint_ords()), [])
+assert.fails(lambda: "abcЙ😿".codepoint_ords()[2], "unhandled index") # not indexable
+assert.fails(lambda: len("abcЙ😿".codepoint_ords()), "no len") # unknown length
 
 # string.codepoints
-assert.eq(type("abcЙ😿".codepoints()), "codepoints")
+assert.eq(type("abcЙ😿".codepoints()), "string.codepoints")
 assert.eq(str("abcЙ😿".codepoints()), '"abcЙ😿".codepoints()')
 assert.eq(list("abcЙ😿".codepoints()), ["a", "b", "c", "Й", "😿"])
-assert.eq(list(("A" + "😿Z"[1:]).codepoints()), ["A", "\x9f", "\x98", "\xbf", "Z"])
+assert.eq(list(("A" + "😿Z"[1:]).codepoints()), ["A", "�", "�", "�", "Z"])
 assert.eq(list("".codepoints()), [])
+assert.fails(lambda: "abcЙ😿".codepoints()[2], "unhandled index") # not indexable
+assert.fails(lambda: len("abcЙ😿".codepoints()), "no len") # unknown length
 
 # string.elem_ords
-assert.eq(type("abcЙ😿".elem_ords()), "elems")
+assert.eq(type("abcЙ😿".elem_ords()), "string.elems")
 assert.eq(str("abcЙ😿".elem_ords()), '"abcЙ😿".elem_ords()')
 assert.eq(list("abcЙ😿".elem_ords()), [97, 98, 99, 208, 153, 240, 159, 152, 191])
 assert.eq(list(("A" + "😿Z"[1:]).elem_ords()), [65, 159, 152, 191, 90])
 assert.eq(list("".elem_ords()), [])
+assert.eq("abcЙ😿".elem_ords()[2], 99) # indexable
+assert.eq(len("abcЙ😿".elem_ords()), 9) # known length
 
 # string.elems
-assert.eq(type("abcЙ😿".elems()), "elems")
+assert.eq(type("abcЙ😿".elems()), "string.elems")
 assert.eq(str("abcЙ😿".elems()), '"abcЙ😿".elems()')
 assert.eq(
     list("abcЙ😿".elems()),
@@ -78,6 +92,8 @@ assert.eq(
     ["A", "\x9f", "\x98", "\xbf", "Z"],
 )
 assert.eq(list("".elems()), [])
+assert.eq("abcЙ😿".elems()[2], "c") # indexable
+assert.eq(len("abcЙ😿".elems()), 9) # known length
 
 # indexing, x[i]
 assert.eq("Hello, 世界!"[0], "H")

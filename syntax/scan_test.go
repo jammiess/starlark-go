@@ -44,6 +44,8 @@ func scan(src interface{}) (tokens string, err error) {
 			fmt.Fprintf(&buf, "%e", val.float)
 		case STRING:
 			fmt.Fprintf(&buf, "%q", val.string)
+		case BYTES:
+			fmt.Fprintf(&buf, "b%q", val.string)
 		default:
 			buf.WriteString(tok.String())
 		}
@@ -192,6 +194,30 @@ pass`, "pass newline pass EOF"}, // consecutive newlines are consolidated
 		{`"\377"`, `"\xff" EOF`},
 		{`"\378"`, `"\x1f8" EOF`},                                // = '\37' + '8'
 		{`"\400"`, `foo.star:1:1: invalid escape sequence \400`}, // unlike Python 2 and 3
+		// hex escapes
+		{`"\x00"`, `"\x00" EOF`},
+		{`"\xff"`, `"\xff" EOF`},
+		{`"\xFf"`, `"\xff" EOF`},
+		{`"\xF"`, `foo.star:1:1: truncated escape sequence \xF`},
+		{`"\x"`, `foo.star:1:1: truncated escape sequence \x`},
+		{`"\xfg"`, `foo.star:1:1: invalid escape sequence \xfg`},
+		// Unicode escapes
+		// \uXXXX
+		{`"\u0400"`, `"Ѐ" EOF`},
+		{`"\u100"`, `foo.star:1:1: truncated escape sequence \u100`},
+		{`"\u04000"`, `"Ѐ0" EOF`}, // = U+0400 + '0'
+		{`"\u100g"`, `foo.star:1:1: invalid escape sequence \u100g`},
+		{`"\u4E16"`, `"世" EOF`},
+		{`"\udc00"`, `"�" EOF`}, // unpaired surrogates ok
+		// \UXXXXXXXX
+		{`"\U00000400"`, `"Ѐ" EOF`},
+		{`"\U0000400"`, `foo.star:1:1: truncated escape sequence \U0000400`},
+		{`"\U000004000"`, `"Ѐ0" EOF`}, // = U+0400 + '0'
+		{`"\U1000000g"`, `foo.star:1:1: invalid escape sequence \U1000000g`},
+		{`"\U0010FFFF"`, `"\U0010ffff" EOF`},
+		{`"\U00110000"`, `foo.star:1:1: code point out of range: \U00110000 (max \U00110000)`},
+		{`"\U0001F63F"`, `"😿" EOF`},
+		{`"\U0000dc00"`, `"�" EOF`}, // unpaired surrogates ok
 
 		// backslash escapes
 		// As in Go, a backslash must escape something.

@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 // unesc maps single-letter chars following \ to their actual values.
@@ -41,13 +42,18 @@ var esc = [256]byte{
 }
 
 // unquote unquotes the quoted string, returning the actual
-// string value, whether the original was triple-quoted, and
-// an error describing invalid input.
-func unquote(quoted string) (s string, triple bool, err error) {
+// string value, whether the original was triple-quoted,
+// whether it was a byte string, and an error describing invalid input.
+func unquote(quoted string) (s string, triple, isByte bool, err error) {
 	// Check for raw prefix: means don't interpret the inner \.
 	raw := false
 	if strings.HasPrefix(quoted, "r") {
 		raw = true
+		quoted = quoted[1:]
+	}
+	// Check for bytes prefix.
+	if strings.HasPrefix(quoted, "b") {
+		isByte = true
 		quoted = quoted[1:]
 	}
 
@@ -138,7 +144,7 @@ func unquote(quoted string) (s string, triple bool, err error) {
 			quoted = quoted[2:]
 
 		case '0', '1', '2', '3', '4', '5', '6', '7':
-			// Octal escape, up to 3 digits.
+			// Octal escape, up to 3 digits, \OOO.
 			n := int(quoted[1] - '0')
 			quoted = quoted[2:]
 			for i := 1; i < 3; i++ {
@@ -158,7 +164,7 @@ func unquote(quoted string) (s string, triple bool, err error) {
 			buf.WriteByte(byte(n))
 
 		case 'x':
-			// Hexadecimal escape, exactly 2 digits.
+			// Hexadecimal escape, exactly 2 digits, \xXX.
 			if len(quoted) < 4 {
 				err = fmt.Errorf(`truncated escape sequence %s`, quoted)
 				return
@@ -170,6 +176,30 @@ func unquote(quoted string) (s string, triple bool, err error) {
 			}
 			buf.WriteByte(byte(n))
 			quoted = quoted[4:]
+
+		case 'u', 'U':
+			// Unicode code point, 4 (\uXXXX) or 8 (\UXXXXXXXX) hex digits.
+			// Unpaired surrogates are allowed (unlike in Go).
+			sz := 6
+			if quoted[1] == 'U' {
+				sz = 10
+			}
+			if len(quoted) < sz {
+				err = fmt.Errorf(`truncated escape sequence %s`, quoted)
+				return
+			}
+			n, err1 := strconv.ParseUint(quoted[2:sz], 16, 0)
+			if err1 != nil {
+				err = fmt.Errorf(`invalid escape sequence %s`, quoted[:sz])
+				return
+			}
+			if n > unicode.MaxRune {
+				err = fmt.Errorf(`code point out of range: %s (max \U%08x)`,
+					quoted[:sz], n)
+				return
+			}
+			buf.WriteRune(rune(n))
+			quoted = quoted[sz:]
 		}
 	}
 
