@@ -9,3 +9,5 @@ require (
 	golang.org/x/sys v0.0.0-20200803210538-64077c9b5642
 	google.golang.org/protobuf v1.25.0
 )
+
+replace go.starlark.net => github.com/jammiess/starlark-go
