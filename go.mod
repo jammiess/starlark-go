@@ -10,4 +10,7 @@ require (
 	google.golang.org/protobuf v1.25.0
 )
 
-replace go.starlark.net => github.com/jammiess/starlark-go
+replace (
+	go.starlark.net => github.com/jammiess/starlark-go
+	go.starlark.net/internal => github.com/jammiess/starlark-go/internal
+)
