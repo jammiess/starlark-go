@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"go.starlark.net/resolve"
-	"go.starlark.net/syntax"
+	"github.com/jammiess/starlark-go/resolve"
+	"github.com/jammiess/starlark-go/syntax"
 )
 
 // TestPlusFolding ensures that the compiler generates optimized code for

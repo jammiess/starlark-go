@@ -1,15 +1,15 @@
 
-<!-- This file is the project homepage for go.starlark.net -->
+<!-- This file is the project homepage for github.com/jammiess/starlark-go -->
 
 # Starlark in Go
 
 [![Travis CI](https://travis-ci.org/google/starlark-go.svg)](https://travis-ci.org/google/starlark-go)
-[![GoDoc](https://godoc.org/go.starlark.net/starlark?status.svg)](https://godoc.org/go.starlark.net/starlark)
+[![GoDoc](https://godoc.org/github.com/jammiess/starlark-go/starlark?status.svg)](https://godoc.org/github.com/jammiess/starlark-go/starlark)
 
 This is the home of the _Starlark in Go_ project.
 Starlark in Go is an interpreter for Starlark, implemented in Go.
 Starlark was formerly known as Skylark.
-The new import path for Go packages is `"go.starlark.net/starlark"`.
+The new import path for Go packages is `"github.com/jammiess/starlark-go/starlark"`.
 
 Starlark is a dialect of Python intended for use as a configuration language.
 Like Python, it is an untyped dynamic language with high-level data
@@ -40,7 +40,7 @@ languages and compilers.
 
 * About the Go implementation: [doc/impl.md](doc/impl.md)
 
-* API documentation: [godoc.org/go.starlark.net/starlark](https://godoc.org/go.starlark.net/starlark)
+* API documentation: [godoc.org/github.com/jammiess/starlark-go/starlark](https://godoc.org/github.com/jammiess/starlark-go/starlark)
 
 * Mailing list: [starlark-go](https://groups.google.com/forum/#!forum/starlark-go)
 
@@ -53,7 +53,7 @@ Build the code:
 ```shell
 # check out the code and dependencies,
 # and install interpreter in $GOPATH/bin
-$ go get -u go.starlark.net/cmd/starlark
+$ go get -u github.com/jammiess/starlark-go/cmd/starlark
 ```
 
 Run the interpreter:
@@ -94,7 +94,7 @@ When you have finished, type `Ctrl-D` to close the REPL's input stream.
 Embed the interpreter in your Go program:
 
 ```go
-import "go.starlark.net/starlark"
+import "github.com/jammiess/starlark-go/starlark"
 
 // Execute Starlark program in a file.
 thread := &starlark.Thread{Name: "my thread"}

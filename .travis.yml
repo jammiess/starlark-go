@@ -1,6 +1,6 @@
 language: go
 
-go_import_path: go.starlark.net
+go_import_path: github.com/jammiess/starlark-go
 
 go:
     - "1.13.x"

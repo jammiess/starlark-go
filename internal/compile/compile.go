@@ -24,7 +24,7 @@
 // Operands, logically uint32s, are encoded using little-endian 7-bit
 // varints, the top bit indicating that more bytes follow.
 //
-package compile // import "go.starlark.net/internal/compile"
+package compile // import "github.com/jammiess/starlark-go/internal/compile"
 
 import (
 	"bytes"
@@ -35,8 +35,8 @@ import (
 	"strconv"
 	"sync"
 
-	"go.starlark.net/resolve"
-	"go.starlark.net/syntax"
+	"github.com/jammiess/starlark-go/resolve"
+	"github.com/jammiess/starlark-go/syntax"
 )
 
 // Disassemble causes the assembly code for each function

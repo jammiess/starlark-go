@@ -102,9 +102,9 @@ import (
 	"google.golang.org/protobuf/reflect/protoregistry"
 	"google.golang.org/protobuf/types/dynamicpb"
 
-	"go.starlark.net/starlark"
-	"go.starlark.net/starlarkstruct"
-	"go.starlark.net/syntax"
+	"github.com/jammiess/starlark-go/starlark"
+	"github.com/jammiess/starlark-go/starlarkstruct"
+	"github.com/jammiess/starlark-go/syntax"
 )
 
 // SetPool associates with the specified Starlark thread the
@@ -1236,7 +1236,7 @@ func (x EnumValueDescriptor) CompareSameType(op syntax.Token, y_ starlark.Value,
 // A Bytes is an immutable sequence of bytes.
 // It is comparable, iterable, indexable, and sliceable.
 //
-// (In go.starlark.net, text Strings are also byte strings,
+// (In github.com/jammiess/starlark-go, text Strings are also byte strings,
 // but we shouldn't rely on that.
 // See https://github.com/bazelbuild/starlark/issues/112.)
 type Bytes string

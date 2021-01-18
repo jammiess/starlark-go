@@ -11,7 +11,7 @@ import (
 	"reflect"
 	"strconv"
 
-	"go.starlark.net/syntax"
+	"github.com/jammiess/starlark-go/syntax"
 )
 
 // Int is the type of a Starlark int.

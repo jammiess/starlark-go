@@ -10,7 +10,7 @@
 //
 // The assert.error function, which reports errors to the current Go
 // testing.T, requires that clients call SetReporter(thread, t) before use.
-package starlarktest // import "go.starlark.net/starlarktest"
+package starlarktest // import "github.com/jammiess/starlark-go/starlarktest"
 
 import (
 	"fmt"
@@ -21,8 +21,8 @@ import (
 	"strings"
 	"sync"
 
-	"go.starlark.net/starlark"
-	"go.starlark.net/starlarkstruct"
+	"github.com/jammiess/starlark-go/starlark"
+	"github.com/jammiess/starlark-go/starlarkstruct"
 )
 
 const localKey = "Reporter"
@@ -143,5 +143,5 @@ var DataFile = func(pkgdir, filename string) string {
 		return filepath.Join(testSrcdir, "net_starlark_go", pkgdir, filename)
 	}
 
-	return filepath.Join(build.Default.GOPATH, "src/go.starlark.net", pkgdir, filename)
+	return filepath.Join(build.Default.GOPATH, "src/github.com/jammiess/starlark-go", pkgdir, filename)
 }

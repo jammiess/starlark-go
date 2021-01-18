@@ -12,8 +12,8 @@ import (
 	"strings"
 	"testing"
 
-	"go.starlark.net/starlark"
-	"go.starlark.net/starlarktest"
+	"github.com/jammiess/starlark-go/starlark"
+	"github.com/jammiess/starlark-go/starlarktest"
 )
 
 func Benchmark(b *testing.B) {
